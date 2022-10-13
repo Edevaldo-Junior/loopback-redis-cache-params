@@ -1,14 +1,14 @@
 {
-  "name": "loopback-redis-cache",
+  "name": "loopback-redis-cache-params",
   "version": "1.0.8",
-  "description": "Redis cache for loopback.io",
+  "description": "Redis cache for loopback.io, adapt for project",
   "main": "rediscache.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vkatsar/loopback-redis-cache.git"
+    "url": "git+https://github.com/Edevaldo-Junior/loopback-redis-cache-params.git"
   },
   "keywords": [
     "loopback",
@@ -25,9 +25,9 @@
   "author": "Vassileios Katsaris",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vkatsar/loopback-redis-cache/issues"
+    "url": "https://github.com/Edevaldo-Junior/loopback-redis-cache-params/issues"
   },
-  "homepage": "https://github.com/vkatsar/loopback-redis-cache#readme",
+  "homepage": "https://github.com/Edevaldo-Junior/loopback-redis-cache-params#readme",
   "dependencies": {
     "redis": "^2.7.1",
     "redis-delete-pattern": "^0.1.0"
