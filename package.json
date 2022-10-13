@@ -1,6 +1,6 @@
 {
   "name": "loopback-redis-cache-params",
-  "version": "1.0.8",
+  "version": "1.0.0",
   "description": "Redis cache for loopback.io, adapt for project",
   "main": "rediscache.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "redis",
     "cache"
   ],
-  "author": "Vassileios Katsaris",
+  "author": "Edevaldo Batista",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Edevaldo-Junior/loopback-redis-cache-params/issues"

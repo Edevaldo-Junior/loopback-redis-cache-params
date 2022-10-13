@@ -1,5 +1,6 @@
 # loopback-redis-cache
 Redis cache mixin for loopback.io, Fork to project, add prefix in redis
+Fork from https://www.npmjs.com/package/loopback-redis-cache
 
 # Features
 
@@ -14,7 +15,7 @@ loopback-redis-cache requires [Node.js](https://nodejs.org/) v4+ to run.
  Install using npm
 
 ```sh
-$ npm install loopback-redis-cache --save
+$ npm iloopback-redis-cache-params --save
 ```
 Add to /server/config.json
 ```
