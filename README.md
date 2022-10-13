@@ -1,5 +1,5 @@
 # loopback-redis-cache
-Redis cache mixin for loopback.io
+Redis cache mixin for loopback.io, Fork to project, add prefix in redis
 
 # Features
 
