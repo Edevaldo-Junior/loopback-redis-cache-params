@@ -15,7 +15,7 @@ loopback-redis-cache requires [Node.js](https://nodejs.org/) v4+ to run.
  Install using npm
 
 ```sh
-$ npm iloopback-redis-cache-params --save
+$ npm i loopback-redis-cache-params --save
 ```
 Add to /server/config.json
 ```
