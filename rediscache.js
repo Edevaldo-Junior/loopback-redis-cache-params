@@ -9,7 +9,7 @@ module.exports = function(Model, options) {
     var redis = require("redis"),
         client = redis.createClient(clientSettings);
 
-    var redisDeletePattern = require('redis-delete-pattern'); 
+    var redisDeletePattern = require('redis-delete-pattern');
 
     client.on("error", function (err) {
         console.log(err);
@@ -17,7 +17,7 @@ module.exports = function(Model, options) {
         if(err.toString().indexOf("invalid password") !== -1){
             console.log("Invalid password... reconnecting with server config...");
             var app = require('../../server/server');
-            var clientSettings = app.get('redis');        
+            var clientSettings = app.get('redis');
             client = redis.createClient(clientSettings);
         }
     });
@@ -29,9 +29,9 @@ module.exports = function(Model, options) {
             if(typeof ctx.req.query.cache != 'undefined'){
                 var modelName = ctx.method.sharedClass.name;
                 var cachExpire = ctx.req.query.cache;
-
                 // set key name
-                var cache_key = modelName+'_'+new Buffer(JSON.stringify(ctx.req.query)).toString('base64');
+                const prefix = formatNameData(ctx, res);
+                var cache_key = modelName + '_' + prefix + '_' + new Buffer(JSON.stringify(ctx.req.url)).toString('base64');
 
                 // search for cache
                 client.get(cache_key, function(err, val) {
@@ -47,16 +47,16 @@ module.exports = function(Model, options) {
                     }else{
                         //return data
                         next();
-                    }                
-                });    
+                    }
+                });
 
             }else{
                 next();
             }
         }else{
             next();
-        }            
-    });    
+        }
+    });
 
     Model.afterRemote('**', function(ctx, res, next) {
         // get all find methods and search first in cache - if not exist save in cache
@@ -64,9 +64,10 @@ module.exports = function(Model, options) {
             if(typeof ctx.req.query.cache != 'undefined'){
                 var modelName = ctx.method.sharedClass.name;
                 var cachExpire = ctx.req.query.cache;
-                
+
                 // set key name
-                var cache_key = modelName+'_'+new Buffer(JSON.stringify(ctx.req.query)).toString('base64');
+                const prefix = formatNameData(ctx, res);
+                var cache_key = modelName + '_' + prefix + '_' + new Buffer(JSON.stringify(ctx.req.url)).toString('base64');
                 // search for cache
                 client.get(cache_key, function(err, val) {
                     if(err){
@@ -80,15 +81,15 @@ module.exports = function(Model, options) {
                         next();
                     }else{
                         next();
-                    }               
-                });    
+                    }
+                });
 
             }else{
                 next();
             }
         }else{
             next();
-        }        
+        }
     });
 
     Model.afterRemote('**', function(ctx, res, next) {
@@ -96,10 +97,10 @@ module.exports = function(Model, options) {
         if((ctx.method.name.indexOf("find") == -1 && ctx.method.name.indexOf("__get") == -1) && client.connected){
             var modelName = ctx.method.sharedClass.name;
             var cachExpire = ctx.req.query.cache;
-            
-            // set key name
-            var cache_key = modelName+'_*';
 
+            // set key name
+            const prefix = formatNameData(ctx, res);
+            var cache_key = modelName + '_' + prefix + '_*';
             // delete cache
             redisDeletePattern({
                 redis: client,
@@ -113,6 +114,16 @@ module.exports = function(Model, options) {
 
         }else{
             next();
-        }    
+        }
     });
+
+    const formatNameData = (ctx, res) => {
+      let prefix = '';
+      if (ctx.method.sharedClass.name === 'Order') {
+        prefix = res.id && res.id.toString() || ctx.args && ctx.args.id;
+      } else if (ctx.method.sharedClass.name === 'UserAccount') {
+        prefix = res.id && res.id.toString() || ctx.args && ctx.args.id;
+      }
+      return prefix;
+    }
 }
