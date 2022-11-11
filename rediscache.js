@@ -1,4 +1,9 @@
+const {orderStatus} = require("../../common/constants/order/order-status");
 module.exports = function(Model, options) {
+    const listCustomEndPoints = [
+        'disputedOrder'
+    ]
+
     if(options.client){
         var clientSettings = options.client;
     }else{
@@ -94,9 +99,8 @@ module.exports = function(Model, options) {
 
     Model.afterRemote('**', function(ctx, res, next) {
         // delete cache on patchOrCreate, create, delete, update, destroy, upsert
-        if((ctx.method.name.indexOf("find") == -1 && ctx.method.name.indexOf("__get") == -1) && client.connected){
+        if(listCustomEndPoints.includes(ctx.method.name) ||(ctx.method.name.indexOf("find") == -1 && ctx.method.name.indexOf("__get") == -1) && client.connected){
             var modelName = ctx.method.sharedClass.name;
-            var cachExpire = ctx.req.query.cache;
 
             // set key name
             const prefix = formatNameData(ctx, res);
@@ -118,12 +122,22 @@ module.exports = function(Model, options) {
     });
 
     const formatNameData = (ctx, res) => {
-      let prefix = '';
-      if (ctx.method.sharedClass.name === 'Order') {
-        prefix = res.id && res.id.toString() || ctx.args && ctx.args.id;
-      } else if (ctx.method.sharedClass.name === 'UserAccount') {
-        prefix = res.id && res.id.toString() || ctx.args && ctx.args.id;
-      }
-      return prefix;
+        let prefix = '';
+        if (ctx.method.sharedClass.name === 'Order') {
+            prefix = getIdOrder(ctx, res);
+        } else if (ctx.method.sharedClass.name === 'UserAccount') {
+            prefix = res.id && res.id.toString() || ctx.args && ctx.args.id;
+        }
+        return prefix;
+    }
+
+    const getIdOrder = (ctx, res) => {
+        switch (ctx.method.name) {
+            case 'disputedOrder':
+                return ctx.req.body.order.id
+                break;
+            default:
+                return res.id && res.id.toString() || ctx.args && ctx.args.id
+        }
     }
 }
