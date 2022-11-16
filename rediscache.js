@@ -1,9 +1,4 @@
-const {orderStatus} = require("../../common/constants/order/order-status");
 module.exports = function(Model, options) {
-    const listCustomEndPoints = [
-        'disputedOrder'
-    ]
-
     if(options.client){
         var clientSettings = options.client;
     }else{
@@ -98,8 +93,11 @@ module.exports = function(Model, options) {
     });
 
     Model.afterRemote('**', function(ctx, res, next) {
+        const listCustomEndPoints = [
+            'disputedOrder'
+        ]
         // delete cache on patchOrCreate, create, delete, update, destroy, upsert
-        if(listCustomEndPoints.includes(ctx.method.name) ||(ctx.method.name.indexOf("find") == -1 && ctx.method.name.indexOf("__get") == -1) && client.connected){
+        if((ctx.method.name.indexOf("find") == -1 && ctx.method.name.indexOf("__get") == -1) && client.connected){
             var modelName = ctx.method.sharedClass.name;
 
             // set key name
@@ -124,20 +122,25 @@ module.exports = function(Model, options) {
     const formatNameData = (ctx, res) => {
         let prefix = '';
         if (ctx.method.sharedClass.name === 'Order') {
-            prefix = getIdOrder(ctx, res);
+            const result = prefix = getOrderId(ctx, res);
+            prefix = result;
         } else if (ctx.method.sharedClass.name === 'UserAccount') {
             prefix = res.id && res.id.toString() || ctx.args && ctx.args.id;
         }
         return prefix;
     }
 
-    const getIdOrder = (ctx, res) => {
-        switch (ctx.method.name) {
-            case 'disputedOrder':
-                return ctx.req.body.order.id
-                break;
-            default:
-                return res.id && res.id.toString() || ctx.args && ctx.args.id
+    const getOrderId = (ctx, res) => {
+        if (res.id && res.id) {
+            return res.id.toString();
+        } else if (ctx.args && ctx.args.id) {
+            return ctx.args.id;
+        } else if (ctx.args && ctx.args.order && ctx.args.order.id) {
+            return ctx.args.order.id;
+        } else if (ctx.args && ctx.args.orderId) {
+            return ctx.args.orderId;
+        } else {
+            return ''
         }
     }
 }
