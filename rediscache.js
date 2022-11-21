@@ -122,7 +122,7 @@ module.exports = function(Model, options) {
     const formatNameData = (ctx, res) => {
         let prefix = '';
         if (ctx.method.sharedClass.name === 'Order') {
-            const result = prefix = getOrderId(ctx, res);
+            const result = getOrderId(ctx, res);
             prefix = result;
         } else if (ctx.method.sharedClass.name === 'UserAccount') {
             prefix = res.id && res.id.toString() || ctx.args && ctx.args.id;
@@ -139,6 +139,8 @@ module.exports = function(Model, options) {
             return ctx.args.order.id;
         } else if (ctx.args && ctx.args.orderId) {
             return ctx.args.orderId;
+        } else if (ctx.args && ctx.args.body && ctx.args.body.idOrder) {
+            return ctx.args.body.idOrder;
         } else {
             return ''
         }
