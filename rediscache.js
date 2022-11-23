@@ -125,13 +125,13 @@ module.exports = function(Model, options) {
             const result = getOrderId(ctx, res);
             prefix = result;
         } else if (ctx.method.sharedClass.name === 'UserAccount') {
-            prefix = res.id && res.id.toString() || ctx.args && ctx.args.id;
+            prefix = getUserId(ctx, res);
         }
         return prefix;
     }
 
     const getOrderId = (ctx, res) => {
-        if (res.id && res.id) {
+        if (res && res.id && res.id) {
             return res.id.toString();
         } else if (ctx.args && ctx.args.id) {
             return ctx.args.id;
@@ -141,6 +141,18 @@ module.exports = function(Model, options) {
             return ctx.args.orderId;
         } else if (ctx.args && ctx.args.body && ctx.args.body.idOrder) {
             return ctx.args.body.idOrder;
+        } else if (ctx.args && ctx.args.body && ctx.args.body.orderId) {
+            return ctx.args.body.orderId;
+        } else {
+            return ''
+        }
+    }
+
+    const getUserId = (ctx, res) => {
+        if (res && res.id && res.id) {
+            return res.id.toString();
+        } else if (ctx.args && ctx.args.id) {
+            return ctx.args.id;
         } else {
             return ''
         }
