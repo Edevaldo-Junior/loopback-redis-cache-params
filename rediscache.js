@@ -133,6 +133,10 @@ module.exports = function(Model, options) {
     const getOrderId = (ctx, res) => {
         if (res && res.id && res.id) {
             return res.id.toString();
+        } else if (res && res.body && res.body.__data && res.body.__data.id) {
+            return res.body.__data.id.toString();
+        } else if (res && res.accepted && res.accepted.__data && res.accepted.__data.id) {
+            return res.accepted.__data.id.toString();
         } else if (ctx.args && ctx.args.id) {
             return ctx.args.id;
         } else if (ctx.args && ctx.args.order && ctx.args.order.id) {
