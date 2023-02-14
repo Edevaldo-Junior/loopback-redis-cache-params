@@ -8,6 +8,7 @@ module.exports = function(Model, options) {
 
     var redis = require("redis"),
         client = redis.createClient(clientSettings);
+    app.clientRedis = client;
 
     var redisDeletePattern = require('redis-delete-pattern');
 
